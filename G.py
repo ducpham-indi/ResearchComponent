@@ -1,14 +1,10 @@
-import pyxie
-import pyvmath
-from pyxie import devtool
-from pyxie.apputil import graphicsHelper
+from pyxie import *
+from pyvmath import *
 from gameobject import GameObject
 from component import Component
-
-px = pyxie
-"""Alias for pyxie"""
-
-vmath = pyvmath
-dev = devtool
+import pyxie as px
 
 CAMERA = 1
+ELAPSED_TIME = 0.03
+DT = 0.03
+SHOWCASES = list()
