@@ -20,12 +20,11 @@ class Figure(Component):
 
     __figure = None
 
-    def init(self, path: str, animations: typing.List[str]):
-        # self.currentState = STATUS_STAY
-        # self.nextState = STATUS_STAY
+    def __init__(self, path: str, animations: typing.List[str]):
+        super().__init__()
 
-        # path: "Shapphiart/Sapphiart"
-        # this return barebone pyxie figure that load from the input path
+        self.path = path
+        self.animations = animations
         self.__figure = G.figure(path)
         self.animations = animations
 
@@ -37,12 +36,11 @@ class Figure(Component):
 
         fig = self.__figure
         fig.connectAnimator(px.ANIMETION_SLOT_A0, self.animations[0])
-        self.update()
-
         self.transition_time = 0
 
     def start(self):
         G.SHOWCASES[0].add(self.__figure)
+        self.update()
 
     def change_anim(self, anim_name):
         index = self.animation_indices.get(anim_name)
@@ -66,14 +64,9 @@ class Figure(Component):
 
     def __update_transform(self):
         fig = self.__figure
-        rot = pm.normalize(
-            pm.quat_rotation(0)
-            * pm.quat_rotationZ(math.radians(self.transform.rotation.z))
-            * pm.quat_rotationY(math.radians(self.transform.rotation.y))
-            * pm.quat_rotationX(math.radians(self.transform.rotation.x))
-        )
-        fig.rotation = rot
+        fig.rotation = self.transform.rotation
         fig.position = self.transform.position
+        fig.scale = self.transform.scale
         pass
 
     def __update_transition(self):
@@ -98,4 +91,8 @@ class Figure(Component):
         self.__figure.setBlendingWeight(
             px.ANIMETION_PART_A, self.transition_time / self.TRANSITION_TIME
         )
+        pass
+
+    def kill(self):
+        G.SHOWCASES[0].remove(self.__figure)
         pass

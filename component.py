@@ -16,15 +16,21 @@ class Component:
     coroutines: Coroutines
     transform: Transform
     __started: False
+    __woke: False
 
-    def __init__(self, go: module_gameobject.GameObject, *args):
+    def __init__(self):
         self.__started = False
-        self.go = go
-        self.transform = self.go.transform
+        self.__woke = False
         self.coroutines = Coroutines()
-        self.init(*args)
 
-    def init(self, *args):
+    def _awake(self):
+        if self.__woke:
+            return
+        self.__woke = True
+        self.awake()
+        pass
+
+    def awake(self):
         pass
 
     def _start(self):
@@ -43,4 +49,11 @@ class Component:
         pass
 
     def update(self):
+        pass
+
+    def _kill(self):
+        self.kill()
+        pass
+
+    def kill(self):
         pass

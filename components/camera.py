@@ -7,16 +7,17 @@ import math
 
 class Camera(Component):
 
-    targetShowcaseIndex: int = -1
+    targetShowcaseIndex: int = 0
     targetTexture = None  # pyxie.texture
     camera = None  # pyxie.camera
 
-    def init(self):
+    def __init__(self, targetShowcaseIndex: int):
+        super().__init__()
+        self.targetShowcaseIndex = targetShowcaseIndex
+
+    def awake(self):
         self.camera = G.px.camera(self.go.name)
         self.camera.lockon = False
-        pass
-
-    def start(self):
         pass
 
     def render(self):
@@ -24,24 +25,18 @@ class Camera(Component):
             return
 
         if self.targetShowcaseIndex >= 0:
-            self.camera.shoot(G.SHOWCASES[self.targetShowcaseIndex], clearColor=True)
+            self.camera.shoot(G.SHOWCASES[self.targetShowcaseIndex], clearColor=False)
 
         if self.targetTexture is not None:
             self.camera.shoot(
                 G.SHOWCASES[self.targetShowcaseIndex],
                 target=self.targetTexture,
-                clearColor=True,
+                clearColor=False,
             )
         pass
 
     def update(self):
         cam = self.camera
-        rot = pm.normalize(
-            pm.quat_rotation(0)
-            * pm.quat_rotationZ(math.radians(self.transform.rotation.z))
-            * pm.quat_rotationY(math.radians(self.transform.rotation.y))
-            * pm.quat_rotationX(math.radians(self.transform.rotation.x))
-        )
-        cam.rotation = rot
+        cam.rotation = self.transform.calculated_quarternion
         cam.position = self.transform.position
         pass
