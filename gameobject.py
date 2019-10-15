@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 class GameObject:
 
     __components: typing.Set
+    __new_components: typing.Set
     __camera = None
     transform: transform.Transform = None
     __dead: False
@@ -22,16 +23,19 @@ class GameObject:
     @staticmethod
     def Create(name):
         go = GameObject(name)
-        G.SCENE.add_gameobject(go)
         return go
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, scene: G.Scene = None):
         self.__components = set()
+        self.__new_components = set()
         self.__started = False
         self.name = name
         self.transform = self.add_component(transform.Transform())
         self.transform.transform = self.transform
         self.__dead = False
+
+        scene = scene or G.SCENE
+        scene.add_gameobject(self)
         pass
 
     def add_component(self, component: T) -> T:
@@ -42,7 +46,7 @@ class GameObject:
         if t == components.Camera:
             self.__camera = component
 
-        self.__components.add(component)
+        self.__new_components.add(component)
         component.go = self
         component.transform = self.transform
 
@@ -53,7 +57,7 @@ class GameObject:
             return None
 
         component = T(self, *params)
-        self.__components.add(component)
+        self.__new_components.add(component)
 
         if T == components.Camera:
             self.__camera = component
@@ -61,16 +65,24 @@ class GameObject:
         return component
 
     def awake(self):
-        for co in self.__components:
+        for co in self.iterate_components:
             co._awake()
 
     def start(self):
-        for co in self.__components:
+        for co in self.iterate_components:
             co._start()
 
     def update(self):
-        for co in self.__components:
+        for co in self.iterate_components:
             co._update()
+
+    @property
+    def iterate_components(self) -> typing.Iterable[comp.Component]:
+        if len(self.__new_components) > 0:
+            self.__components.update(self.__new_components)
+            self.__new_components.clear()
+
+        yield from self.__components
 
     def try_render_camera(self):
         if self.__camera is None:

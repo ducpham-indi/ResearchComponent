@@ -57,3 +57,8 @@ class Component:
 
     def kill(self):
         pass
+
+    def as_new_gameobject(self, name="Noname"):
+        go = module_gameobject.GameObject.Create(name)
+        go.add_component(self)
+        return go

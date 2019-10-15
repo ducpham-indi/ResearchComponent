@@ -19,15 +19,16 @@ def run_dev():
     G.SCENE = G.Scene("Main scene")
 
     # TODO: CHANGE MAIN HERE, WE NOT USING IT AT ALL
-    main_script = gameloader.load_scripts("/source/", "main", "main.py")
-    G.GameObject.Create("Main gameplay object").add_component(main_script.Main())
+    from source.main import Main
+
+    G.GameObject.Create("Main gameplay object").add_component(Main())
     # init main component
 
     while True:
 
         G.DT = G.ELAPSED_TIME = G.getElapsedTime()
 
-        moveVector = G.vec3(0.0, 0.0, 0.0)
+        # moveVector = G.vec3(0.0, 0.0, 0.0)
 
         # touch = G.singleTouch()
         # if touch is not None:
