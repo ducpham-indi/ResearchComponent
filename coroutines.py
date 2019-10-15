@@ -65,7 +65,7 @@ class Coroutines:
             self.__new_coroutines.clear()
 
     @staticmethod
-    def yield_wait(time: float = 0):
+    def co_wait(time: float = 0):
         time -= yield
         while time > 0:
             time -= yield

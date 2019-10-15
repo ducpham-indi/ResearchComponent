@@ -4,6 +4,7 @@ from pyvmath import *
 import pyxie.apputil.graphicsHelper as graphicHelper
 from gameobject import GameObject
 from component import Component
+import components
 from scene import Scene
 import pyxie as px
 
